@@ -14,14 +14,17 @@ function parseReports(filePath) {
 }
 
 function checkSafety (arr) {
-    let ascending = true, descending = true, differBy1 = true, differBy3 = true;
-    for (let i = 1; i < arr.length && (ascending || descending) && differBy1 && differBy3; i++) {
-        ascending = ascending && arr[i] > arr[i-1];
-        descending = descending && arr[i] < arr[i-1];
-        differBy1 = differBy1 && Math.abs(arr[i] - arr[i-1]) >= 1;
-        differBy3 = differBy3 && Math.abs(arr[i] - arr[i-1]) <= 3;
+    let monotonic = true, gradDiff = true, skipUsed = false;
+    const ascending = arr[1] > arr[0];
+    
+    for (let i = 1; i < arr.length && monotonic && gradDiff; i++) {
+        const diff = arr[i] - arr[i - 1];
+        monotonic = ascending ? diff > 0 : diff < 0;
+        gradDiff = gradDiff && Math.abs(diff) >= 1 && Math.abs(diff) <= 3;
+        
     }
-    return (ascending || descending) && differBy1 && differBy3;
+
+    return monotonic && gradDiff;
 }
 
 function testSafety (reportList) {
